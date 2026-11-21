@@ -5,7 +5,7 @@ from pathlib import Path
 import pytest
 from jinja2 import UndefinedError
 
-from site_builder.build import PROJECT_ROOT, Page, Paths, build, make_environment
+from site_builder.build import PROJECT_ROOT, Page, Paths, build, make_environment, paragraphs
 from site_builder.load import ContentError
 
 
@@ -104,6 +104,55 @@ def test_text_is_escaped(tmp_path: Path) -> None:
     build(Paths(content=content, out=tmp_path / "dist"))
     html = (tmp_path / "dist" / "index.html").read_text()
     assert "&lt;b&gt;Engineer&lt;/b&gt;" in html
+
+
+@pytest.fixture
+def recipository(built: Path) -> str:
+    return (built / "projects" / "recipository" / "index.html").read_text()
+
+
+def test_each_project_gets_a_page(recipository: str) -> None:
+    assert '<h1 class="project-title">Recipository</h1>' in recipository
+    assert "<title>Recipository · Lily MacCormick</title>" in recipository
+    assert 'href="https://recipository.fly.dev">Visit the site' in recipository
+    assert "<dt>Hosting</dt><dd>Fly.io + Supabase</dd>" in recipository
+
+
+def test_project_page_links_back_home(recipository: str) -> None:
+    assert 'href="../../#projects">← All projects' in recipository
+    assert 'href="../../css/site.css"' in recipository
+
+
+def test_features_are_numbered_and_highlights_bold(recipository: str) -> None:
+    assert '<span class="date-stamp">01</span>' in recipository
+    assert '<span class="date-stamp">03</span>' in recipository
+    assert "<strong>A job queue in Postgres.</strong> Uses FOR UPDATE" in recipository
+
+
+def test_sections_without_content_are_left_out(recipository: str) -> None:
+    # No code_url, hero, gallery or "learned" in recipository.toml yet.
+    assert "Read the code" not in recipository
+    assert 'class="browser"' not in recipository
+    assert "More screenshots" not in recipository
+    assert "What I learned" not in recipository
+
+
+def test_previous_and_next_link_the_projects_in_order(tmp_path: Path) -> None:
+    content = copy_content(tmp_path)
+    (content / "projects" / "zine.toml").write_text(
+        'name = "Zine"\nsummary = "A tiny zine."\ntags = []\norder = 2\n'
+    )
+    out = tmp_path / "dist"
+    build(Paths(content=content, out=out))
+    first = (out / "projects" / "recipository" / "index.html").read_text()
+    second = (out / "projects" / "zine" / "index.html").read_text()
+    assert 'href="../../projects/zine/">Zine →' in first
+    assert 'href="../../projects/recipository/">← Recipository' in second
+
+
+def test_paragraphs_split_on_blank_lines() -> None:
+    text = "\nOne line.\n\n  Two.\nStill two.\n\n\n"
+    assert paragraphs(text) == ["One line.", "Two.\nStill two."]
 
 
 @pytest.mark.parametrize(

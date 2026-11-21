@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}{{ project.name }} · {{ site.name }}{% endblock %}
+{% block description %}{{ project.tagline or project.summary }}{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <a href="{{ root }}#projects">← All projects</a>
+  <a class="breadcrumb__name" href="{{ root }}">{{ site.name }}</a>
+</nav>
+
+<header class="card project-hero">
+  <p class="eyebrow">Personal project{% if project.year %} · {{ project.year }}{% endif %}</p>
+  <h1 class="project-title">{{ project.name }}</h1>
+  <p class="tagline">{{ project.tagline or project.summary }}</p>
+  {% if project.url or project.code_url %}
+  <div class="buttons">
+    {% if project.url %}<a class="button button--primary" href="{{ project.url }}">Visit the site ↗</a>{% endif %}
+    {% if project.code_url %}<a class="button" href="{{ project.code_url }}">Read the code ↗</a>{% endif %}
+  </div>
+  {% endif %}
+  {% if project.facts %}
+  <dl class="facts">
+    {% for label, value in project.facts %}
+    <div><dt>{{ label }}</dt><dd>{{ value }}</dd></div>
+    {% endfor %}
+  </dl>
+  {% endif %}
+</header>
+
+{% if project.hero %}
+<figure class="browser">
+  <div class="browser__bar" aria-hidden="true">
+    <span></span><span></span><span></span>
+    {% if project.url %}<span class="browser__url">{{ project.url | replace("https://", "") }}</span>{% endif %}
+  </div>
+  <img src="{{ root }}{{ project.hero.image }}" alt="{{ project.hero.caption }}">
+  <figcaption>{{ project.hero.caption }}</figcaption>
+</figure>
+{% endif %}
+
+{% if project.why %}
+<section class="card card--ruled" aria-labelledby="why-title">
+  <div class="card__head"><h2 class="card__title" id="why-title">Why I built it</h2></div>
+  <div class="prose">
+    {% for paragraph in project.why | paragraphs %}<p>{{ paragraph }}</p>{% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{% if project.features %}
+<section class="features" aria-labelledby="features-title">
+  <h2 class="section-title" id="features-title">What it does</h2>
+  {% for feature in project.features %}
+  <article class="card feature{% if feature.screenshot %} feature--with-shot{% endif %}">
+    {% if feature.screenshot %}
+    <img class="feature__shot" src="{{ root }}{{ feature.screenshot }}" alt="Screenshot: {{ feature.title }}" loading="lazy">
+    {% endif %}
+    <div class="feature__text">
+      <span class="date-stamp">{{ "%02d" | format(loop.index) }}</span>
+      <h3>{{ feature.title }}</h3>
+      <p>{{ feature.text }}</p>
+    </div>
+  </article>
+  {% endfor %}
+</section>
+{% endif %}
+
+{% if project.highlights %}
+<section class="card" aria-labelledby="hood-title">
+  <div class="card__head"><h2 class="card__title" id="hood-title">Under the hood</h2></div>
+  <ul class="highlights">
+    {% for highlight in project.highlights %}
+    <li><strong>{{ highlight.title }}.</strong> {{ highlight.text }}</li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}
+
+{% if project.gallery %}
+<section class="gallery" aria-labelledby="gallery-title">
+  <h2 class="section-title" id="gallery-title">More screenshots</h2>
+  <div class="gallery__grid">
+    {% for shot in project.gallery %}
+    <figure>
+      <img src="{{ root }}{{ shot.image }}" alt="{{ shot.caption }}" loading="lazy">
+      <figcaption>{{ shot.caption }}</figcaption>
+    </figure>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{% if project.learned %}
+<section class="card" aria-labelledby="learned-title">
+  <div class="card__head"><h2 class="card__title" id="learned-title">What I learned</h2></div>
+  <div class="prose">
+    {% for paragraph in project.learned | paragraphs %}<p>{{ paragraph }}</p>{% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<nav class="pager" aria-label="More projects">
+  {% if previous %}
+  <a class="button" href="{{ root }}projects/{{ previous.slug }}/">← {{ previous.name }}</a>
+  {% else %}
+  <a class="button" href="{{ root }}#projects">← All projects</a>
+  {% endif %}
+  {% if next %}
+  <a class="button button--primary" href="{{ root }}projects/{{ next.slug }}/">{{ next.name }} →</a>
+  {% endif %}
+</nav>
+{% endblock %}

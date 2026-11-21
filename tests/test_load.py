@@ -91,6 +91,56 @@ def test_site_mistakes_name_the_file_and_key(tmp_path: Path, site: str, message:
     assert message in str(caught.value)
 
 
+def test_reads_the_project_page_fields(tmp_path: Path) -> None:
+    project_toml = (
+        PROJECT
+        + """
+role = "Inventor"
+stack = ["Brass", "Steam"]
+hero_image = "img/engine.png"
+hero_caption = "The engine."
+why = "Because."
+
+[[features]]
+title = "Adds"
+text = "Very fast."
+screenshot = "img/adds.png"
+
+[[highlights]]
+title = "Punch cards"
+text = "Programs on cards."
+
+[[gallery]]
+image = "img/side.png"
+caption = "From the side."
+"""
+    )
+    project = load_content(make_content(tmp_path, engine=project_toml)).projects[0]
+    assert project.facts == [("Role", "Inventor"), ("Stack", "Brass, Steam")]
+    assert project.hero is not None and project.hero.caption == "The engine."
+    assert project.features[0].screenshot == "img/adds.png"
+    assert project.highlights[0].title == "Punch cards"
+    assert project.images() == ["img/engine.png", "img/adds.png", "img/side.png"]
+
+
+def test_project_page_fields_are_all_optional(tmp_path: Path) -> None:
+    project = load_content(make_content(tmp_path, engine=PROJECT)).projects[0]
+    assert (project.hero, project.why, project.features, project.facts) == (None, None, (), [])
+
+
+def test_hero_image_needs_a_caption(tmp_path: Path) -> None:
+    with pytest.raises(ContentError) as caught:
+        load_content(make_content(tmp_path, engine=PROJECT + 'hero_image = "img/x.png"'))
+    assert "hero_image and hero_caption go together" in str(caught.value)
+
+
+def test_typos_inside_features_are_caught(tmp_path: Path) -> None:
+    project_toml = PROJECT + '\n[[features]]\ntitle = "A"\ntext = "B"\nscreenshoot = "x.png"\n'
+    with pytest.raises(ContentError) as caught:
+        load_content(make_content(tmp_path, engine=project_toml))
+    assert "[[features]] #1: unknown key(s): screenshoot" in str(caught.value)
+
+
 def test_project_typos_are_caught(tmp_path: Path) -> None:
     with pytest.raises(ContentError) as caught:
         load_content(make_content(tmp_path, engine=PROJECT + 'sumary = "x"'))

@@ -10,7 +10,7 @@ import tomllib
 from pathlib import Path
 from typing import Any
 
-from site_builder.models import Content, Job, Project, Site
+from site_builder.models import Content, Feature, Highlight, Job, Project, Shot, Site
 
 SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
 
@@ -136,6 +136,39 @@ def load_site(path: Path, where: str) -> Site:
     return site
 
 
+def _feature(table: Table) -> Feature:
+    feature = Feature(
+        title=table.text("title"),
+        text=table.text("text"),
+        screenshot=table.optional_text("screenshot"),
+    )
+    table.finish()
+    return feature
+
+
+def _highlight(table: Table) -> Highlight:
+    highlight = Highlight(title=table.text("title"), text=table.text("text"))
+    table.finish()
+    return highlight
+
+
+def _shot(table: Table) -> Shot:
+    shot = Shot(image=table.text("image"), caption=table.text("caption"))
+    table.finish()
+    return shot
+
+
+def _hero(table: Table) -> Shot | None:
+    """hero_image and hero_caption come as a pair: one without the other is a mistake."""
+    image = table.optional_text("hero_image")
+    caption = table.optional_text("hero_caption")
+    if image and caption:
+        return Shot(image=image, caption=caption)
+    if image or caption:
+        raise table.error("hero_image and hero_caption go together: set both or neither")
+    return None
+
+
 def load_project(path: Path, where: str) -> Project:
     slug = path.stem
     if not SLUG.fullmatch(slug):
@@ -153,6 +186,19 @@ def load_project(path: Path, where: str) -> Project:
         featured=table.flag("featured"),
         order=table.number("order", default=100),
         thumbnail=table.optional_text("thumbnail"),
+        tagline=table.optional_text("tagline"),
+        year=table.optional_text("year"),
+        role=table.optional_text("role"),
+        stack=table.texts("stack"),
+        hosting=table.optional_text("hosting"),
+        status=table.optional_text("status"),
+        code_url=table.optional_text("code_url"),
+        hero=_hero(table),
+        why=table.optional_text("why"),
+        features=tuple(_feature(t) for t in table.tables("features")),
+        highlights=tuple(_highlight(t) for t in table.tables("highlights")),
+        gallery=tuple(_shot(t) for t in table.tables("gallery")),
+        learned=table.optional_text("learned"),
     )
     table.finish()
     return project

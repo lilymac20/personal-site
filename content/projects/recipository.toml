@@ -1,5 +1,6 @@
 # One file per project. The file name is the page address: projects/recipository/
 
+# ---- The card on the home page ----
 name = "Recipository"
 summary = "A recipe vault that saves pages from any link, keeps numbered versions of my tweaks and backs everything up to Google Drive."
 tags = ["FastAPI", "Postgres", "HTMX"]
@@ -11,3 +12,68 @@ order = 1
 
 # Card picture, inside static/. Without one, the card shows the project name.
 # thumbnail = "img/projects/recipository/library.png"
+
+# ---- The project page (everything below is optional) ----
+tagline = "A personal recipe vault. Save recipes from the web before they disappear, keep numbered versions of your own tweaks, and back everything up to Google Drive."
+year = "2026"
+role = "Solo: design, code, deploy"
+stack = ["Python", "FastAPI", "PostgreSQL", "HTMX"]
+hosting = "Fly.io + Supabase"
+status = "Live, still growing"
+# code_url = "https://github.com/lilymac20/Recipository"   # once the repo is public
+
+# Big screenshot under the title (inside static/), with a caption.
+# hero_image = "img/projects/recipository/library.png"
+# hero_caption = "The library: every saved recipe as a card, filtered by tags."
+
+# Blank lines start a new paragraph.
+why = """
+Recipe sites vanish, move behind paywalls or bury the recipe under a long story. And once I've changed a recipe, I want my version kept alongside the original, not scribbled in the margin.
+"""
+
+[[features]]
+title = "Save from a link, or paste a whole page"
+text = "Paste a URL and a background job fetches the page, pulls out the ingredients and steps, and takes a full-page snapshot. Pasting a Ctrl+A copy works too: it finds the recipe and skips the menus, ads and comments."
+# screenshot = "img/projects/recipository/import.png"
+
+[[features]]
+title = "Every tweak is a new version"
+text = "Editing a recipe saves the next numbered version. Version 1 is always the original, and any older version can be opened read-only from the version picker."
+
+[[features]]
+title = "Kept forever in Google Drive"
+text = "One button turns each recipe into a Google Doc, with photos and full version history. Re-syncs upload only what changed."
+
+# Shown as: **Title.** Text
+[[highlights]]
+title = "A job queue in Postgres"
+text = "Uses FOR UPDATE SKIP LOCKED, with retries and backoff. No extra services."
+
+[[highlights]]
+title = "Safe link fetching"
+text = "Blocks private addresses (even through DNS rebinding), respects robots.txt and re-checks every redirect."
+
+[[highlights]]
+title = "Accounts done properly"
+text = "Argon2id passwords, server-side sessions, CSRF tokens and login rate limiting."
+
+[[highlights]]
+title = "Typed and tested"
+text = "Strict mypy, pytest, and a test that fails if a page starts making extra database queries."
+
+[[highlights]]
+title = "Ships itself"
+text = "Every push to main runs CI and deploys to Fly.io."
+
+[[highlights]]
+title = "Light on the page"
+text = "Server-rendered HTML with HTMX and hand-written CSS, no front-end framework."
+
+# More screenshots, shown in a row.
+# [[gallery]]
+# image = "img/projects/recipository/phone-library.png"
+# caption = "Built phone-first."
+
+# A few sentences in your own words: a hard bug, a decision you'd make again.
+# learned = """
+# """

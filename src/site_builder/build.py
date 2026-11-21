@@ -4,6 +4,7 @@ GitHub Pages can only serve finished files, so Python runs here, at build time:
 load the content, render every page with Jinja2, copy the static files next to them.
 """
 
+import re
 import shutil
 import sys
 from collections.abc import Iterator
@@ -61,13 +62,30 @@ def make_environment(templates: Path) -> Environment:
     )
 
 
+def paragraphs(text: str) -> list[str]:
+    """Jinja filter: split text on blank lines, so TOML can hold several paragraphs."""
+    return [part.strip() for part in re.split(r"\n\s*\n", text) if part.strip()]
+
+
 def pages(content: Content) -> Iterator[Page]:
-    """Every page on the site."""
+    """Every page on the site: the home page, then one page per project."""
     yield Page(
         "index.html",
         "index.html",
         {"site": content.site, "projects": content.projects},
     )
+    projects = content.projects
+    for index, project in enumerate(projects):
+        yield Page(
+            "project.html",
+            f"projects/{project.slug}/index.html",
+            {
+                "site": content.site,
+                "project": project,
+                "previous": projects[index - 1] if index > 0 else None,
+                "next": projects[index + 1] if index + 1 < len(projects) else None,
+            },
+        )
 
 
 def check_images(content: Content, static: Path) -> None:
@@ -87,6 +105,7 @@ def build(paths: Paths = Paths()) -> list[Path]:
 
     env = make_environment(paths.templates)
     env.globals["year"] = date.today().year
+    env.filters["paragraphs"] = paragraphs
     written: list[Path] = []
     for page in pages(content):
         html = env.get_template(page.template).render(root=page.root, **page.context)
