@@ -1,0 +1,59 @@
+# Check, build and publish the site to GitHub Pages.
+# Every push and pull request runs the checks; only pushes to main deploy.
+
+name: Site
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch: # a "Run workflow" button in the Actions tab
+
+# Least privilege by default; the deploy job asks for the two extra permissions it needs.
+permissions:
+  contents: read
+
+# One deploy at a time; a newer push waits instead of cancelling a deploy halfway.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  check:
+    name: Check and build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Install dependencies (exactly as locked)
+        run: uv sync --locked
+
+      - name: Lint, type check and test
+        run: make check
+
+      - name: Build the site
+        run: make build
+
+      - name: Package dist/ for Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    name: Deploy
+    needs: check
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write    # publish to Pages
+      id-token: write # prove to Pages that this run is really from this repo
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publish
+        id: deployment
+        uses: actions/deploy-pages@v4

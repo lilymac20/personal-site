@@ -17,3 +17,15 @@ make check   # lint, type check and tests
 `src/site_builder/build.py` renders the templates in `templates/` into `dist/` and
 copies `static/` next to them. GitHub Pages can only serve finished files, so Python
 runs at build time, not while someone is visiting.
+
+## Adding a project
+
+Add `content/projects/<name>.toml` (copy `recipository.toml`; every page field is optional)
+and put its screenshots in `static/img/projects/<name>/`. The file name becomes the address:
+`projects/<name>/`.
+
+## Deploying
+
+Every push to `main` runs `.github/workflows/pages.yml`: `make check`, `make build`, then
+publishes `dist/` to GitHub Pages at https://lilymac20.github.io/personal-site/. Pull requests
+run the checks without deploying.

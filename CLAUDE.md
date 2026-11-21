@@ -36,10 +36,14 @@ Phone-first, touch targets at least 44px, text contrast at least 4.5:1.
 
 ## Plan
 1. Scaffold + tooling (done)
-2. Content files (TOML) + dataclasses + home page
-3. Project pages (one per TOML file) + template
-4. GitHub Actions: build + deploy to Pages
+2. Content files (TOML) + dataclasses + home page (done)
+3. Project pages (one per TOML file) + link checker test (done)
+4. GitHub Actions: `.github/workflows/pages.yml` checks every push/PR, deploys main to Pages
+   (done; needs repo Settings > Pages > Source = "GitHub Actions" once)
 5. Real Recipository screenshots (Playwright, channel="chrome")
+Open questions for Lily: title "Software Engineer" vs CV's "Senior Backend Engineer"; add
+CV skills (C#/.NET, EF, Java/Spring Boot, Azure, Terraform, GitLab CI/CD) to the toolbox?
+"What I learned" for Recipository is hers to write. Recipository repo is private (no code link).
 
 ## About Lily (for the site's content)
 Software Engineer. Email lily.maccormick@gmail.com,
