@@ -16,17 +16,46 @@
   --accent-dark: #80230F;
   --link: #B3361F;
   --yellow: #F7D57A;
+  --shot: #E7EEF3;        /* screenshot placeholder tint */
+  --shot-ink: #3D4A55;
 
+  --font-name: "Citta Novela", "Bricolage Grotesque", system-ui, sans-serif;
+  --font-heading: "Going Alone", "Bricolage Grotesque", system-ui, sans-serif;
   --font-display: "Bricolage Grotesque", system-ui, sans-serif;
-  --font-body: "Figtree", system-ui, sans-serif;
+  --font-body: "Jost", "Futura", system-ui, sans-serif; /* Futura-style; real 400/500/700 */
   --font-mono: "Space Mono", ui-monospace, monospace;
+
+  --space-xs: 6px;
+  --space-s: 12px;
+  --space-m: 24px;
+  --space-l: 36px;
+  --space-card: 28px;     /* padding inside a card */
 
   --radius-card: 22px;
   --radius-inner: 18px;
+  --radius-pill: 999px;
   --shadow-card: 0 3px 0 var(--line);
 }
 
 /* ---------- Base ---------- */
+
+/* Self-hosted name font, subset to Latin (see static/fonts/FONTS.md). */
+@font-face {
+  font-family: "Citta Novela";
+  src: url("../fonts/citta-novela-text-used.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Going Alone";
+  src: url("../fonts/going-alone.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 *, *::before, *::after { box-sizing: border-box; }
 
 body {
@@ -40,20 +69,359 @@ body {
 a { color: var(--link); }
 a:hover { color: var(--accent-dark); }
 
+:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+h1, h2, h3, p { margin: 0; }
+
 /* ---------- Layout ---------- */
 .page {
   max-width: 1140px;
   margin: 0 auto;
-  padding: 48px 16px 72px;
+  padding: 48px 16px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+}
+
+.split {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-m);
+  align-items: flex-start;
+}
+.split__main { flex: 3 1 520px; min-width: 0; }
+.split__side {
+  flex: 2 1 320px;
+  min-width: 0;
+  display: grid;
+  /* Side by side when there's room (no experience section), stacked otherwise. */
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: var(--space-m);
+  align-items: start;
+}
+
+.footer {
+  padding: 0 16px 48px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--muted-2);
 }
 
 /* ---------- Components ---------- */
+
+/* Card: the index card every section sits on. */
+.card {
+  background-color: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+.card--ruled {
+  background-image: repeating-linear-gradient(
+    to bottom, transparent 0 31px, var(--ruled) 31px 32px
+  );
+  background-position: 0 66px;
+}
+.card__head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px var(--space-m);
+  padding: 20px var(--space-card) var(--space-s);
+  background: var(--paper);
+  border-bottom: 2px solid var(--rule);
+}
+.card__head--divider { border-top: 1px solid var(--line); }
+.card__title {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 34px; /* handwriting reads smaller, so bigger than a normal heading */
+  line-height: 1.1;
+  color: var(--accent);
+}
+.card__note { font-size: 15px; color: var(--muted); }
+
+/* Hero */
+.hero {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-l);
+  padding: clamp(28px, 5vw, 48px);
+}
+.hero__text {
+  flex: 1 1 380px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-s);
+  padding-right: 110px; /* room for the sticker */
+}
+.eyebrow {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
 .name {
-  margin: 0;
+  font-family: var(--font-name);
+  font-weight: 400;
+  font-size: clamp(70px, 10vw, 130px); /* a narrow font, so bigger than usual */
+  line-height: 0.95;
+  color: var(--accent);
+}
+.intro { font-size: 19px; max-width: 540px; margin-top: 4px; }
+
+/* Postage-stamp photo frame. Two mask layers, added together:
+   1. a grid of round holes, one at every 18px tile corner (so also all over the middle),
+   2. a solid rectangle inset by the hole radius (7px), which fills the middle back in.
+   What's left is half-holes along the edges. The size is a multiple of 18px on both
+   sides so the holes land evenly at the corners. */
+.stamp-frame {
+  flex: none;
+  transform: rotate(-3deg);
+  filter: drop-shadow(0 4px 6px rgb(80 50 30 / 0.18));
+}
+.stamp {
+  --stamp-mask:
+    radial-gradient(circle 7px at 7px 7px, #0000 98%, #000) -7px -7px / 18px 18px,
+    linear-gradient(#000 0 0) center / calc(100% - 14px) calc(100% - 14px) no-repeat;
+  width: 180px;
+  height: 216px;
+  padding: 14px;
+  background: var(--white);
+  -webkit-mask: var(--stamp-mask);
+  mask: var(--stamp-mask);
+}
+.stamp__img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.stamp__initials {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #C9D9E6;
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: clamp(40px, 5.5vw, 64px);
-  line-height: 1;
-  letter-spacing: -0.02em;
+  font-size: 56px;
+  color: var(--ink);
+}
+
+/* Yellow wavy "say hi!" sticker */
+.sticker {
+  position: absolute;
+  top: var(--space-m);
+  right: var(--space-m);
+  width: 116px;
+  height: 116px;
+  transform: rotate(10deg);
+  transition: transform 0.15s ease;
+}
+.sticker:hover { transform: rotate(4deg) scale(1.05); }
+.sticker svg { display: block; width: 100%; height: 100%; }
+.sticker__big {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 24px;
+  fill: var(--ink);
+}
+.sticker__small {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 11px;
+  fill: var(--ink);
+}
+
+/* Project cards */
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  gap: var(--space-m);
+  padding: 32px var(--space-card);
+}
+.project-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--white);
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-inner);
+  overflow: hidden;
+  color: var(--ink);
+  text-decoration: none;
+  transition: transform 0.15s ease;
+}
+.project-card:hover { color: var(--ink); transform: translateY(-3px) rotate(-0.4deg); }
+.project-card__shot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 16 / 10;
+  background: var(--shot);
+  border-bottom: 2px solid var(--ink);
+}
+.project-card__shot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+}
+.project-card__shot-name {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 32px;
+  color: var(--shot-ink);
+}
+.project-card__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 18px 20px 20px;
+}
+.project-card__name {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 23px;
+}
+.project-card__summary { font-size: 15px; color: var(--muted); }
+.project-card__more {
+  margin-top: auto;
+  padding-top: 10px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 13px;
   color: var(--accent);
+}
+.tags { display: flex; flex-wrap: wrap; gap: var(--space-xs); margin-top: 4px; }
+.tag {
+  background: var(--bg);
+  border-radius: var(--radius-pill);
+  padding: 4px 10px;
+  font-size: 13px;
+  font-weight: 400;
+}
+.badge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: var(--yellow);
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-pill);
+  padding: 3px 10px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 13px;
+  transform: rotate(6deg);
+}
+
+/* Timeline with rubber-stamp dates */
+.timeline {
+  list-style: none;
+  margin: 0;
+  padding: var(--space-card);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-card);
+}
+/* Two columns, the dates in a fixed-width one, so every title starts at the same place
+   however long its date is. Phones stack them (see the media query at the bottom). */
+.timeline__item {
+  display: grid;
+  grid-template-columns: 160px minmax(0, 1fr);
+  gap: var(--space-s) var(--space-m);
+  align-items: start;
+}
+.date-stamp {
+  justify-self: start; /* the stamp hugs its text instead of filling the column */
+  border: 2px solid var(--accent);
+  border-radius: 6px;
+  padding: 4px 10px;
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transform: rotate(-2deg);
+}
+.timeline__item:nth-child(3n + 2) .date-stamp { transform: rotate(1.5deg); }
+.timeline__item:nth-child(3n) .date-stamp { transform: rotate(-1deg); }
+.timeline__body h3 {
+  font-family: var(--font-body);
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: var(--space-xs);
+}
+.timeline__body p { font-size: 16px; color: var(--muted); }
+
+/* Skill chips and plain lists */
+.chips {
+  list-style: none;
+  margin: 0;
+  padding: var(--space-m) var(--space-card);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.chip {
+  border: 1.5px solid var(--accent);
+  border-radius: var(--radius-pill);
+  padding: 8px 15px;
+  font-size: 15px;
+  font-weight: 400;
+}
+.plain-list {
+  list-style: none;
+  margin: 0;
+  padding: 20px var(--space-card) var(--space-card);
+  font-size: 17px;
+  line-height: 1.7;
+}
+
+/* Find me: the solid red card */
+.find-me {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  padding: var(--space-m) var(--space-card);
+  background: var(--accent);
+  border-radius: var(--radius-card);
+  color: var(--paper);
+}
+.find-me__title {
+  margin-bottom: var(--space-xs);
+  font-family: var(--font-heading);
+  font-weight: 400;
+  font-size: 34px;
+  line-height: 1.1;
+}
+.find-me a {
+  display: flex;
+  align-items: center;
+  gap: var(--space-s);
+  min-height: 44px;
+  color: var(--paper);
+  font-size: 17px;
+  overflow-wrap: anywhere;
+}
+.find-me a:hover { color: var(--white); text-decoration-thickness: 2px; }
+.find-me a:focus-visible { outline-color: var(--paper); }
+.find-me svg { flex: none; }
+
+/* ---------- Phones ---------- */
+@media (max-width: 640px) {
+  .hero { gap: var(--space-m); }
+  .hero__text { padding-right: 0; }
+  .sticker { width: 88px; height: 88px; top: var(--space-s); right: var(--space-s); }
+  .card__head, .chips, .plain-list, .timeline, .project-grid { padding-inline: 20px; }
+  .timeline__item { grid-template-columns: minmax(0, 1fr); }
 }

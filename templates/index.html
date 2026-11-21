@@ -1,8 +1,105 @@
 {% extends "base.html" %}
+{% from "macros.html" import icon %}
 
 {% block content %}
-<main class="page">
-  <h1 class="name">{{ name }}</h1>
-  <p>Coming soon.</p>
-</main>
+<header class="card hero">
+  <div class="stamp-frame">
+    <div class="stamp">
+      {% if site.photo %}
+      <img class="stamp__img" src="{{ root }}{{ site.photo }}" alt="Photo of {{ site.name }}">
+      {% else %}
+      <div class="stamp__initials" aria-hidden="true">{{ site.initials }}</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="hero__text">
+    <p class="eyebrow">{{ site.role }}</p>
+    <h1 class="name">{{ site.name }}</h1>
+    <p class="intro">{{ site.intro }}</p>
+  </div>
+
+  <a class="sticker" href="mailto:{{ site.email }}" aria-label="Say hi: email {{ site.email }}">
+    <svg viewBox="0 0 128 128" aria-hidden="true">
+      <circle cx="64" cy="64" r="56" fill="#F7D57A" stroke="#F7D57A" stroke-width="14" stroke-linecap="round" stroke-dasharray="0.1 16.4"/>
+      <circle cx="64" cy="64" r="50" fill="#F7D57A"/>
+      <text x="64" y="60" text-anchor="middle" class="sticker__big">say hi!</text>
+      <text x="64" y="82" text-anchor="middle" class="sticker__small">EMAIL ME</text>
+    </svg>
+  </a>
+</header>
+
+{% if projects %}
+<section class="card card--ruled" aria-labelledby="projects-title">
+  <div class="card__head">
+    <h2 class="card__title" id="projects-title">Personal projects</h2>
+    <p class="card__note">Things I built because I wanted them to exist.</p>
+  </div>
+  <div class="project-grid">
+    {% for project in projects %}
+    <a class="project-card" href="{{ root }}projects/{{ project.slug }}/">
+      <span class="project-card__shot">
+        {% if project.thumbnail %}
+        <img src="{{ root }}{{ project.thumbnail }}" alt="" loading="lazy">
+        {% else %}
+        <span class="project-card__shot-name" aria-hidden="true">{{ project.name }}</span>
+        {% endif %}
+      </span>
+      <span class="project-card__body">
+        <span class="project-card__name">{{ project.name }}</span>
+        <span class="project-card__summary">{{ project.summary }}</span>
+        {% if project.tags %}
+        <span class="tags">
+          {% for tag in project.tags %}<span class="tag">{{ tag }}</span>{% endfor %}
+        </span>
+        {% endif %}
+        <span class="project-card__more">See the project →</span>
+      </span>
+      {% if project.featured %}<span class="badge">my favourite</span>{% endif %}
+    </a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<div class="split">
+  {% if site.experience %}
+  <section class="card split__main" aria-labelledby="experience-title">
+    <div class="card__head"><h2 class="card__title" id="experience-title">So far</h2></div>
+    <ol class="timeline">
+      {% for job in site.experience %}
+      <li class="timeline__item">
+        <span class="date-stamp">{{ job.dates }}</span>
+        <div class="timeline__body">
+          <h3>{{ job.title }}</h3>
+          {% if job.summary %}<p>{{ job.summary }}</p>{% endif %}
+        </div>
+      </li>
+      {% endfor %}
+    </ol>
+  </section>
+  {% endif %}
+
+  <div class="split__side">
+    <section class="card" aria-labelledby="toolbox-title">
+      <div class="card__head"><h2 class="card__title" id="toolbox-title">In my toolbox</h2></div>
+      <ul class="chips">
+        {% for skill in site.skills %}<li class="chip">{{ skill }}</li>{% endfor %}
+      </ul>
+      {% if site.hobbies %}
+      <div class="card__head card__head--divider"><h2 class="card__title">Off the clock</h2></div>
+      <ul class="plain-list">
+        {% for hobby in site.hobbies %}<li>{{ hobby }}</li>{% endfor %}
+      </ul>
+      {% endif %}
+    </section>
+
+    <section class="find-me" aria-labelledby="find-me-title">
+      <h2 class="find-me__title" id="find-me-title">Find me</h2>
+      <a href="mailto:{{ site.email }}">{{ icon("mail") }}{{ site.email }}</a>
+      <a href="{{ site.github }}">{{ icon("github") }}GitHub</a>
+      <a href="{{ site.linkedin }}">{{ icon("linkedin") }}LinkedIn</a>
+    </section>
+  </div>
+</div>
 {% endblock %}

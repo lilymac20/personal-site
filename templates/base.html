@@ -3,13 +3,20 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}{{ name }}{% endblock %}</title>
+  <title>{% block title %}{{ site.name }} · {{ site.role }}{% endblock %}</title>
+  <meta name="description" content="{% block description %}{{ site.intro }}{% endblock %}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&family=Space+Mono:wght@700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Jost:ital,wght@0,400;0,500;0,700;1,400&family=Space+Mono:wght@700&display=swap">
   <link rel="stylesheet" href="{{ root }}css/site.css">
 </head>
 <body>
-  {% block content %}{% endblock %}
+  <main class="page">
+    {% block content %}{% endblock %}
+  </main>
+  <footer class="footer">
+    <p>© {{ year }} {{ site.name }} · Built with Python and Jinja ·
+      <a href="https://github.com/lilymac20/personal-site">Source</a></p>
+  </footer>
 </body>
 </html>

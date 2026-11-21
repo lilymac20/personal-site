@@ -1,0 +1,39 @@
+# Everything on the home page that isn't a project.
+# A typo in a key name stops the build with a message saying which one.
+
+name = "Lily MacCormick"
+role = "Software Engineer"
+intro = "I build web apps that do the fiddly part for you, like a recipe vault that saves pages before they disappear and remembers every tweak."
+
+email = "lily.maccormick@gmail.com"
+github = "https://github.com/lilymac20"
+linkedin = "https://www.linkedin.com/in/lily-maccormick/"
+
+# Your photo: put the file in static/img/ and uncomment. Without one, the stamp shows "LM".
+# photo = "img/lily.jpg"
+
+skills = [
+  "Python",
+  "FastAPI",
+  "asyncio",
+  "PostgreSQL",
+  "SQLAlchemy",
+  "HTMX",
+  "CSS",
+  "Docker",
+  "pytest",
+]
+
+hobbies = [
+  "Cooking, then saving the recipe",
+]
+
+# Jobs and education, newest first. "summary" is optional.
+[[experience]]
+dates = "Jul 2021 – now"
+title = "Senior Software Engineer · M&T Bank"
+summary = "Joined through the Technology Development Program, promoted to Software Engineer in 2023 and Senior in 2024. Led the rewrite of Tech Headcount, the bank's system of record for 3,000+ technology headcount requests; built core features of the Modernization Portal, which tracks cloud migration for 1,000+ applications; and mentored 8 junior developers."
+
+[[experience]]
+dates = "2021"
+title = "B.A. Information Science and History · Cornell University"

@@ -1,0 +1,13 @@
+# One file per project. The file name is the page address: projects/recipository/
+
+name = "Recipository"
+summary = "A recipe vault that saves pages from any link, keeps numbered versions of my tweaks and backs everything up to Google Drive."
+tags = ["FastAPI", "Postgres", "HTMX"]
+url = "https://recipository.fly.dev"
+
+# Featured projects come first and get the "my favourite" sticker. Then lower order first.
+featured = true
+order = 1
+
+# Card picture, inside static/. Without one, the card shows the project name.
+# thumbnail = "img/projects/recipository/library.png"

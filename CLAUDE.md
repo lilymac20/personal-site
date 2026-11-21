@@ -17,7 +17,13 @@ Design "E · Index Cards" from the mockup canvas
 https://claude.ai/artifact/A5DK1Vvzu7nwxtaxd3tho4 (home page + project pages + template).
 Cream background, cream "index cards" (pink rule under titles, faint blue ruled lines),
 red accent #C23B22, postage-stamp photo frame, yellow wavy "say hi!" sticker, rubber-stamp
-dates. Fonts: Bricolage Grotesque (headings), Figtree (body), Space Mono (labels).
+dates. Fonts (2026-11-21): name = Citta Novela Text Used (self-hosted, `--font-name`);
+section headings = Going Alone (self-hosted handwriting, `--font-heading`); body text and
+bold text = Jost (Google Fonts, Futura-style, 400/500/700, `--font-body`); labels = Space
+Mono; Bricolage Grotesque still for the stamp initials, badge and sticker. Lily wanted body
+text "a classic sans serif, a little unique and retro". Body fonts she tried and rejected:
+Andika, Bitstream Vera Sans, TA Modern Times (too thin; its ligatures also mangled ".m"). Credits and licence notes in
+`static/fonts/FONTS.md`.
 Phone-first, touch targets at least 44px, text contrast at least 4.5:1.
 
 ## Conventions
