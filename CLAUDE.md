@@ -39,7 +39,9 @@ Phone-first, touch targets at least 44px, text contrast at least 4.5:1.
 2. Content files (TOML) + dataclasses + home page (done)
 3. Project pages (one per TOML file) + link checker test (done)
 4. GitHub Actions: `.github/workflows/pages.yml` checks every push/PR, deploys main to Pages
-   (done; needs repo Settings > Pages > Source = "GitHub Actions" once)
+   (done). NOT LIVE YET by Lily's choice (2026-11-21): the deploy job only runs when the repo
+   variable DEPLOY_PAGES = true. To go live: Settings > Pages > Source = "GitHub Actions", then
+   add that variable, then push or use "Run workflow".
 5. Real Recipository screenshots (Playwright, channel="chrome")
 Open questions for Lily: title "Software Engineer" vs CV's "Senior Backend Engineer"; add
 CV skills (C#/.NET, EF, Java/Spring Boot, Azure, Terraform, GitLab CI/CD) to the toolbox?

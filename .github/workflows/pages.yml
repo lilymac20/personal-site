@@ -45,7 +45,12 @@ jobs:
   deploy:
     name: Deploy
     needs: check
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    # Off until going live: create the repository variable DEPLOY_PAGES = true
+    # (Settings > Secrets and variables > Actions > Variables) after turning Pages on.
+    if: >-
+      vars.DEPLOY_PAGES == 'true'
+      && github.event_name != 'pull_request'
+      && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       pages: write    # publish to Pages

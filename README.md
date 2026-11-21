@@ -29,3 +29,7 @@ and put its screenshots in `static/img/projects/<name>/`. The file name becomes 
 Every push to `main` runs `.github/workflows/pages.yml`: `make check`, `make build`, then
 publishes `dist/` to GitHub Pages at https://lilymac20.github.io/personal-site/. Pull requests
 run the checks without deploying.
+
+Publishing is switched off until the repository variable `DEPLOY_PAGES` is set to `true`
+(Settings > Secrets and variables > Actions > Variables), after setting Settings > Pages >
+Source to "GitHub Actions". Until then, pushes only run the checks.
