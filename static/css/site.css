@@ -1,0 +1,59 @@
+/* Lily MacCormick: personal site.
+   Organised as tokens -> base -> layout -> components -> pages. */
+
+/* ---------- Tokens (from design E, "Index Cards") ---------- */
+:root {
+  --bg: #F4EFE6;
+  --paper: #FFFBF3;
+  --white: #FFFFFF;
+  --ink: #2F2A26;
+  --muted: #574D45;
+  --muted-2: #6B5F56;
+  --line: #E6DCCB;
+  --rule: #E9A596;        /* the pink line under card titles */
+  --ruled: #E3EAF0;       /* faint blue index-card lines */
+  --accent: #C23B22;
+  --accent-dark: #80230F;
+  --link: #B3361F;
+  --yellow: #F7D57A;
+
+  --font-display: "Bricolage Grotesque", system-ui, sans-serif;
+  --font-body: "Figtree", system-ui, sans-serif;
+  --font-mono: "Space Mono", ui-monospace, monospace;
+
+  --radius-card: 22px;
+  --radius-inner: 18px;
+  --shadow-card: 0 3px 0 var(--line);
+}
+
+/* ---------- Base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  line-height: 1.55;
+}
+
+a { color: var(--link); }
+a:hover { color: var(--accent-dark); }
+
+/* ---------- Layout ---------- */
+.page {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 48px 16px 72px;
+}
+
+/* ---------- Components ---------- */
+.name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(40px, 5.5vw, 64px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--accent);
+}
